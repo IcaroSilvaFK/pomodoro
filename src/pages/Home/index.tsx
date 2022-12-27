@@ -12,6 +12,7 @@ export function Home() {
   const inputWorkId = useId()
   const inputTimerId = useId()
   const formId = useId()
+  const taskListId = useId()
 
   return (
     <Container>
@@ -20,10 +21,21 @@ export function Home() {
         <input
           type="text"
           id={inputWorkId}
+          list={taskListId}
           placeholder="Dê um nome para o seu projeto"
         />
+        <datalist id={taskListId}>
+          <option value="cacascs" />
+        </datalist>
         <label htmlFor={inputTimerId}>durante</label>
-        <input type="number" id={inputTimerId} placeholder="- 00 +" />
+        <input
+          type="number"
+          id={inputTimerId}
+          placeholder="- 00 +"
+          max={60}
+          min={5}
+          step={5}
+        />
         <span>minutos.</span>
       </form>
       <CountdownContainer>

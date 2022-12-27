@@ -43,15 +43,18 @@ export const Container = styled.main`
         max-width: 75px;
         text-align: center;
       }
-
+      /* 
       &[type='number']::-webkit-inner-spin-button,
       &[type='number']::-webkit-outer-spin-button {
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
         margin: 0;
-      }
+      } */
 
+      &::-webkit-calendar-picker-indicator {
+        display: none !important;
+      }
       &::placeholder {
         color: ${({ theme }) => theme.colors.gray[500]};
       }
