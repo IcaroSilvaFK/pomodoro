@@ -18,6 +18,7 @@ export const GlobalCSS = createGlobalStyle`
 
     background:${({ theme }) => theme.colors.gray[900]};
     color:${({ theme }) => theme.colors.gray[300]};
+    -webkit-font-smoothing: antialiased;
   }
 
   body,input,textarea, button{
@@ -29,6 +30,9 @@ export const GlobalCSS = createGlobalStyle`
   button,input{
     border: 0;
     outline: 0;
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 
   button{
