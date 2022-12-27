@@ -1,4 +1,4 @@
-import { ThemeType } from './type';
+import { ThemeType } from './type'
 
 export const theme: ThemeType = {
   colors: {
@@ -30,4 +30,4 @@ export const theme: ThemeType = {
     roboto: "'Roboto', sans-serif",
     robotoMono: "'Roboto Mono', monospace",
   },
-};
+}

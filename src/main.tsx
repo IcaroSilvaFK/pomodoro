@@ -1,12 +1,12 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { RouterProvider } from 'react-router-dom'
+import { ThemeProvider } from 'styled-components'
 
-import { routes } from './routes';
+import { routes } from './routes'
 
-import { GlobalCSS } from './styles/global';
-import { theme } from './styles/theme';
+import { GlobalCSS } from './styles/global'
+import { theme } from './styles/theme'
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
@@ -14,5 +14,5 @@ createRoot(document.getElementById('root') as HTMLElement).render(
       <GlobalCSS />
       <RouterProvider router={routes} />
     </ThemeProvider>
-  </StrictMode>
-);
+  </StrictMode>,
+)
