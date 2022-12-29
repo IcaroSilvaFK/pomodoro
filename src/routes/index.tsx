@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { Layout } from '../layout'
 import { History } from '../pages/History'
-import { Home } from '../pages/Home'
+import { Home } from '../pages/HomeContext'
 
 export const routes = createBrowserRouter([
   {

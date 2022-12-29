@@ -1,20 +1,17 @@
+import { useCycle } from '../../hooks/useCycle'
 import { CountdownContainer, Separator } from './styles'
 
-interface ICountdownProps {
-  minute: string
-  second: string
-}
-
-export function Countdown(props: ICountdownProps) {
-  const { minute, second } = props
+export function Countdown() {
+  const { minutesFormattedFromInterface, secondsFormattedFromInterface } =
+    useCycle()
 
   return (
     <CountdownContainer>
-      <span>{minute[0]}</span>
-      <span>{minute[1]}</span>
+      <span>{minutesFormattedFromInterface[0]}</span>
+      <span>{minutesFormattedFromInterface[1]}</span>
       <Separator>:</Separator>
-      <span>{second[0]}</span>
-      <span>{second[1]}</span>
+      <span>{secondsFormattedFromInterface[0]}</span>
+      <span>{secondsFormattedFromInterface[1]}</span>
     </CountdownContainer>
   )
 }

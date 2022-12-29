@@ -11,7 +11,7 @@ import { newTaskFormValidatorSchema } from '../../schemas'
 import { Countdown } from '../../components/Countdown'
 
 type IFormProps = z.infer<typeof newTaskFormValidatorSchema>
-interface ICycle {
+export interface ICycle {
   id: string
   task: string
   time: number

@@ -1,6 +1,45 @@
+import { nanoid } from 'nanoid'
+import { useId } from 'react'
+
+import { z } from 'zod'
+import { useCycle } from '../../hooks/useCycle'
+import { useCycleForm } from '../../hooks/useCycleForm'
+
+import { ICycle } from '../../pages/Home'
+import { newTaskFormValidatorSchema } from '../../schemas'
 import { FormContainer } from './styles'
 
+type IFormProps = z.infer<typeof newTaskFormValidatorSchema>
+
+export interface INewCycleFormRef {
+  isSubmitDisabled: boolean
+  formId: string
+}
+
 export function NewCycleForm() {
+  const inputWorkId = useId()
+  const inputTimerId = useId()
+
+  const taskListId = useId()
+  const { setCycles, setActiveCycleId, setSecondsPassed, activeCycle } =
+    useCycle()
+  const { handleSubmit, register, reset, formId } = useCycleForm()
+
+  async function onSubmit({ task, time }: IFormProps) {
+    const id = nanoid()
+
+    const newCycle: ICycle = {
+      id,
+      task,
+      time,
+      startDate: new Date(),
+    }
+    setCycles((prev) => [...prev, newCycle])
+    setActiveCycleId(id)
+    setSecondsPassed(0)
+    reset()
+  }
+
   return (
     <FormContainer onSubmit={handleSubmit(onSubmit)} id={formId}>
       <label htmlFor={inputWorkId}>Vou trabalhar em</label>
@@ -30,3 +69,5 @@ export function NewCycleForm() {
     </FormContainer>
   )
 }
+
+NewCycleForm.displayName = 'New Cycle Form'

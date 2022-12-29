@@ -7,12 +7,18 @@ import { routes } from './routes'
 
 import { GlobalCSS } from './styles/global'
 import { theme } from './styles/theme'
+import { CycleContextProvider } from './context/CycleContext'
+import { CycleFormContextProvider } from './context/CycleFormContext'
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalCSS />
-      <RouterProvider router={routes} />
+      <CycleFormContextProvider>
+        <CycleContextProvider>
+          <GlobalCSS />
+          <RouterProvider router={routes} />
+        </CycleContextProvider>
+      </CycleFormContextProvider>
     </ThemeProvider>
   </StrictMode>,
 )
