@@ -30,13 +30,7 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
   // const [activeCycleId] = useState<string | null>(null)
   // const [secondsPassed, setSecondsPassed] = useState(0)
 
-  const [state, dispatch] = useReducer(reducer, initialState, () => {
-    const storedState = localStorage.getItem('@timer-cycles')
-
-    if (storedState) {
-      return JSON.parse(storedState)
-    }
-  })
+  const [state, dispatch] = useReducer(reducer, initialState)
   const { cycles, activeCycleId, secondsPassed } = state
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
   const totalSeconds = activeCycle ? activeCycle.time * 60 : 0
