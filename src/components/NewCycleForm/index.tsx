@@ -21,7 +21,7 @@ export function NewCycleForm() {
   const inputTimerId = useId()
 
   const taskListId = useId()
-  const { setCycles, setActiveCycleId, setSecondsPassed, activeCycle } =
+  const { createCycle, setActiveCycleId, setSecondsPassed, activeCycle } =
     useCycle()
   const { handleSubmit, register, reset, formId } = useCycleForm()
 
@@ -34,7 +34,7 @@ export function NewCycleForm() {
       time,
       startDate: new Date(),
     }
-    setCycles((prev) => [...prev, newCycle])
+    createCycle(newCycle)
     setActiveCycleId(id)
     setSecondsPassed(0)
     reset()

@@ -1,14 +1,17 @@
 import { HandPalm, Play } from 'phosphor-react'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { nanoid } from 'nanoid'
 import { differenceInSeconds } from 'date-fns'
 
-import { Container, CountdownButton } from './styles'
+import { useCycle } from '../../hooks/useCycle'
+
 import { newTaskFormValidatorSchema } from '../../schemas'
 import { Countdown } from '../../components/Countdown'
+
+import { Container, CountdownButton } from './styles'
 
 type IFormProps = z.infer<typeof newTaskFormValidatorSchema>
 export interface ICycle {
@@ -21,6 +24,18 @@ export interface ICycle {
 }
 
 export function Home() {
+  const {
+    activeCycle,
+
+    handleFinishCycle,
+    handleInterruptCycle,
+    minutesFormattedFromInterface,
+    secondsFormattedFromInterface,
+    secondsPassed,
+    setActiveCycleId,
+    setSecondsPassed,
+    createCycle,
+  } = useCycle()
   const inputWorkId = useId()
   const inputTimerId = useId()
   const formId = useId()
@@ -32,20 +47,10 @@ export function Home() {
       time: 0,
     },
   })
-  const [cycles, setCycles] = useState<ICycle[]>([])
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
-  const [secondsPassed, setSecondsPassed] = useState(0)
 
   const isSubmitDisabled = !watch('task')
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
   const totalSeconds = activeCycle ? activeCycle.time * 60 : 0
-  const currentSeconds = activeCycle ? totalSeconds - secondsPassed : 0
-
-  const minutes = Math.floor(currentSeconds / 60)
-  const seconds = currentSeconds % 60
-  const minutesFormattedFromInterface = String(minutes).padStart(2, '0')
-  const secondsFormattedFromInterface = String(seconds).padStart(2, '0')
 
   useEffect(() => {
     if (!activeCycle) return
@@ -88,37 +93,10 @@ export function Home() {
       time,
       startDate: new Date(),
     }
-    setCycles((prev) => [...prev, newCycle])
+    createCycle(newCycle)
     setActiveCycleId(id)
     setSecondsPassed(0)
     reset()
-  }
-
-  function handleInterruptCycle() {
-    const updatedCycles = cycles.map((cycle) =>
-      activeCycle?.id === cycle.id
-        ? {
-            ...cycle,
-            interruptedDate: new Date(),
-          }
-        : cycle,
-    )
-
-    setCycles(updatedCycles)
-    setActiveCycleId(null)
-  }
-
-  function handleFinishCycle() {
-    const updatedCycles = cycles.map((cycle) =>
-      activeCycle?.id === cycle.id
-        ? {
-            ...cycle,
-            finishedDate: new Date(),
-          }
-        : cycle,
-    )
-    setCycles(updatedCycles)
-    setActiveCycleId(null)
   }
 
   return (
@@ -149,10 +127,7 @@ export function Home() {
         />
         <span>minutos.</span>
       </form>
-      <Countdown
-        minute={minutesFormattedFromInterface}
-        second={secondsFormattedFromInterface}
-      />
+      <Countdown />
 
       {!activeCycle ? (
         <CountdownButton

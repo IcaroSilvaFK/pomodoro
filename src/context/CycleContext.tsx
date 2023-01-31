@@ -1,35 +1,40 @@
 import { differenceInSeconds } from 'date-fns'
 
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, ReactNode, useEffect, useReducer } from 'react'
 import { ICycle } from '../pages/Home'
+import { reducer, CYCLE_REDUCER_STATE } from '../reducers/cycleReducer'
 
 interface IContextProps {
   handleInterruptCycle: () => void
   handleFinishCycle: () => void
   cycles: ICycle[]
-  setCycles: Dispatch<SetStateAction<ICycle[]>>
-  setActiveCycleId: Dispatch<SetStateAction<string | null>>
-  setSecondsPassed: Dispatch<SetStateAction<number>>
+  setActiveCycleId: (id: string) => void
   activeCycleId: string | null
   secondsPassed: number
   activeCycle: ICycle | undefined
   minutesFormattedFromInterface: string
   secondsFormattedFromInterface: string
+  createCycle(data: ICycle): void
+  setSecondsPassed(seconds: number): void
 }
 
 export const CycleContext = createContext<IContextProps>({} as IContextProps)
 
+const initialState = {
+  cycles: [],
+  activeCycleId: null,
+  secondsPassed: 0,
+}
+
 export function CycleContextProvider({ children }: { children: ReactNode }) {
-  const [cycles, setCycles] = useState<ICycle[]>([])
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
-  const [secondsPassed, setSecondsPassed] = useState(0)
+  // const [cycles, setCycles] = useState<ICycle[]>([])
+  // const [activeCycleId] = useState<string | null>(null)
+  // const [secondsPassed, setSecondsPassed] = useState(0)
+
+  const [{ cycles, activeCycleId, secondsPassed }, dispatch] = useReducer(
+    reducer,
+    initialState,
+  )
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
   const totalSeconds = activeCycle ? activeCycle.time * 60 : 0
@@ -73,45 +78,52 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
   }, [minutesFormattedFromInterface, secondsFormattedFromInterface])
 
   function handleInterruptCycle() {
-    const updatedCycles = cycles.map((cycle) =>
-      activeCycle?.id === cycle.id
-        ? {
-            ...cycle,
-            interruptedDate: new Date(),
-          }
-        : cycle,
-    )
-
-    setCycles(updatedCycles)
-    setActiveCycleId(null)
+    dispatch({
+      type: CYCLE_REDUCER_STATE.INTERRUPT_CYCLE,
+    })
   }
 
   function handleFinishCycle() {
-    const updatedCycles = cycles.map((cycle) =>
-      activeCycle?.id === cycle.id
-        ? {
-            ...cycle,
-            finishedDate: new Date(),
-          }
-        : cycle,
-    )
-    setCycles(updatedCycles)
-    setActiveCycleId(null)
+    dispatch({
+      type: CYCLE_REDUCER_STATE.FINISH_CYCLE,
+    })
   }
+
+  function createCycle(data: ICycle) {
+    dispatch({
+      type: CYCLE_REDUCER_STATE.CREATE_NEW_CYCLE,
+      payload: data,
+    })
+  }
+
+  function setActiveCycleId(id: string | null) {
+    dispatch({
+      type: CYCLE_REDUCER_STATE.CREATE_ACTIVE_CYCLE_ID,
+      payload: id,
+    })
+  }
+
+  function setSecondsPassed(seconds: number) {
+    dispatch({
+      type: CYCLE_REDUCER_STATE.CREATE_SECONDS_PASSED,
+      payload: seconds,
+    })
+  }
+
   return (
     <CycleContext.Provider
       value={{
         handleInterruptCycle,
         handleFinishCycle,
         cycles,
-        setCycles,
         setActiveCycleId,
-        setSecondsPassed,
         activeCycleId,
         secondsPassed,
         activeCycle,
         minutesFormattedFromInterface,
         secondsFormattedFromInterface,
+        createCycle,
+        setSecondsPassed,
       }}
     >
       {children}
