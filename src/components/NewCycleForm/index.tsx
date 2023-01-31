@@ -21,8 +21,7 @@ export function NewCycleForm() {
   const inputTimerId = useId()
 
   const taskListId = useId()
-  const { createCycle, setActiveCycleId, setSecondsPassed, activeCycle } =
-    useCycle()
+  const { createCycle, setSecondsPassed, activeCycle } = useCycle()
   const { handleSubmit, register, reset, formId } = useCycleForm()
 
   async function onSubmit({ task, time }: IFormProps) {
@@ -35,7 +34,7 @@ export function NewCycleForm() {
       startDate: new Date(),
     }
     createCycle(newCycle)
-    setActiveCycleId(id)
+
     setSecondsPassed(0)
     reset()
   }
@@ -61,7 +60,6 @@ export function NewCycleForm() {
         placeholder="- 00 +"
         max={60}
         min={1}
-        step={5}
         disabled={!!activeCycle}
         {...register('time', { valueAsNumber: true })}
       />

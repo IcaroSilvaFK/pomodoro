@@ -32,7 +32,6 @@ export function Home() {
     minutesFormattedFromInterface,
     secondsFormattedFromInterface,
     secondsPassed,
-    setActiveCycleId,
     setSecondsPassed,
     createCycle,
   } = useCycle()
@@ -94,7 +93,6 @@ export function Home() {
       startDate: new Date(),
     }
     createCycle(newCycle)
-    setActiveCycleId(id)
     setSecondsPassed(0)
     reset()
   }

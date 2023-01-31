@@ -2,13 +2,12 @@ import { differenceInSeconds } from 'date-fns'
 
 import { createContext, ReactNode, useEffect, useReducer } from 'react'
 import { ICycle } from '../pages/Home'
-import { reducer, CYCLE_REDUCER_STATE } from '../reducers/cycleReducer'
+import { reducer, ACTION_TYPES } from '../reducers/cycleReducer'
 
 interface IContextProps {
   handleInterruptCycle: () => void
   handleFinishCycle: () => void
   cycles: ICycle[]
-  setActiveCycleId: (id: string) => void
   activeCycleId: string | null
   secondsPassed: number
   activeCycle: ICycle | undefined
@@ -31,11 +30,14 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
   // const [activeCycleId] = useState<string | null>(null)
   // const [secondsPassed, setSecondsPassed] = useState(0)
 
-  const [{ cycles, activeCycleId, secondsPassed }, dispatch] = useReducer(
-    reducer,
-    initialState,
-  )
+  const [state, dispatch] = useReducer(reducer, initialState, () => {
+    const storedState = localStorage.getItem('@timer-cycles')
 
+    if (storedState) {
+      return JSON.parse(storedState)
+    }
+  })
+  const { cycles, activeCycleId, secondsPassed } = state
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
   const totalSeconds = activeCycle ? activeCycle.time * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - secondsPassed : 0
@@ -77,35 +79,32 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minutesFormattedFromInterface, secondsFormattedFromInterface])
 
+  useEffect(() => {
+    localStorage.setItem('@timer-cycles', JSON.stringify(state))
+  }, [state])
+
   function handleInterruptCycle() {
     dispatch({
-      type: CYCLE_REDUCER_STATE.INTERRUPT_CYCLE,
+      type: ACTION_TYPES.INTERRUPT_CYCLE,
     })
   }
 
   function handleFinishCycle() {
     dispatch({
-      type: CYCLE_REDUCER_STATE.FINISH_CYCLE,
+      type: ACTION_TYPES.FINISH_CYCLE,
     })
   }
 
   function createCycle(data: ICycle) {
     dispatch({
-      type: CYCLE_REDUCER_STATE.CREATE_NEW_CYCLE,
+      type: ACTION_TYPES.CREATE_NEW_CYCLE,
       payload: data,
-    })
-  }
-
-  function setActiveCycleId(id: string | null) {
-    dispatch({
-      type: CYCLE_REDUCER_STATE.CREATE_ACTIVE_CYCLE_ID,
-      payload: id,
     })
   }
 
   function setSecondsPassed(seconds: number) {
     dispatch({
-      type: CYCLE_REDUCER_STATE.CREATE_SECONDS_PASSED,
+      type: ACTION_TYPES.CREATE_SECONDS_PASSED,
       payload: seconds,
     })
   }
@@ -116,7 +115,6 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
         handleInterruptCycle,
         handleFinishCycle,
         cycles,
-        setActiveCycleId,
         activeCycleId,
         secondsPassed,
         activeCycle,

@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { ICycle } from '../pages/Home'
 
-export enum CYCLE_REDUCER_STATE {
+export enum ACTION_TYPES {
   CREATE_NEW_CYCLE = 'CREATE_NEW_CYCLE',
   CREATE_ACTIVE_CYCLE_ID = 'CREATE_ACTIVE_CYCLE_ID',
   CREATE_SECONDS_PASSED = 'CREATE_SECONDS_PASSED',
@@ -16,49 +17,40 @@ interface IInitialStateProps {
 
 type IActionProps =
   | {
-      type: CYCLE_REDUCER_STATE.CREATE_ACTIVE_CYCLE_ID
-      payload: string | null
-    }
-  | {
-      type: CYCLE_REDUCER_STATE.CREATE_SECONDS_PASSED
+      type: ACTION_TYPES.CREATE_SECONDS_PASSED
       payload: number
     }
   | {
-      type: CYCLE_REDUCER_STATE.CREATE_NEW_CYCLE
+      type: ACTION_TYPES.CREATE_NEW_CYCLE
       payload: ICycle
     }
   | {
-      type: CYCLE_REDUCER_STATE.INTERRUPT_CYCLE
+      type: ACTION_TYPES.INTERRUPT_CYCLE
     }
   | {
-      type: CYCLE_REDUCER_STATE.FINISH_CYCLE
+      type: ACTION_TYPES.FINISH_CYCLE
     }
 export function reducer(
   initialState: IInitialStateProps,
   action: IActionProps,
 ) {
   switch (action.type) {
-    case CYCLE_REDUCER_STATE.CREATE_ACTIVE_CYCLE_ID: {
-      return {
-        ...initialState,
-        activeCycleId: action.payload,
-      }
-    }
-    case CYCLE_REDUCER_STATE.CREATE_SECONDS_PASSED: {
+    case ACTION_TYPES.CREATE_SECONDS_PASSED: {
       return {
         ...initialState,
         secondsPassed: action.payload,
       }
     }
-    case CYCLE_REDUCER_STATE.CREATE_NEW_CYCLE: {
+    case ACTION_TYPES.CREATE_NEW_CYCLE: {
       const cycles = [...initialState.cycles, action.payload]
 
       return {
         ...initialState,
         cycles,
+        activeCycleId: action.payload.id,
       }
     }
-    case CYCLE_REDUCER_STATE.INTERRUPT_CYCLE: {
+    case ACTION_TYPES.INTERRUPT_CYCLE: {
       const updatedCycles = initialState.cycles.map((cycle) =>
         initialState.activeCycleId === cycle.id
           ? {
@@ -74,7 +66,7 @@ export function reducer(
         cycles: updatedCycles,
       }
     }
-    case CYCLE_REDUCER_STATE.FINISH_CYCLE: {
+    case ACTION_TYPES.FINISH_CYCLE: {
       const updatedCycles = initialState.cycles.map((cycle) =>
         initialState.activeCycleId === cycle.id
           ? {
